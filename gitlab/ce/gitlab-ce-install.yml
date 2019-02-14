@@ -1,0 +1,59 @@
+---
+- hosts: gitlab.example.com
+  name: Install GitLab Community Edition
+
+  tasks:
+
+  - name: system update
+    yum:
+      name: '*'
+      state: latest
+
+  - name: install dependencies
+    yum:
+      name:
+        - curl
+        - policycoreutils
+        - openssh-server
+        - openssh-clients
+        - postfix
+      state: present
+
+  - name: configure and start sshd
+    systemd:
+      name: sshd
+      state: started
+      enabled: yes
+
+  - name: configure and start postfix
+    systemd:
+      state: started
+      enabled: yes
+      name: postfix
+
+  - name: download gitlab script
+    get_url:
+      url: https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh
+      dest: ~/
+      mode: +x
+
+  - name: configure gitlab repository
+    command: sh ~/script.rpm.sh
+
+  - name: gitlab-ce install
+    yum:
+      name: gitlab-ce
+      state: present
+
+  - name: firewall rule for http port
+    firewalld:
+      zone: public
+      port: 80/tcp
+      permanent: yes
+      immediate: yes
+      state: enabled
+
+  - name: firewalld reload
+    systemd:
+      name: firewalld
+      state: restarted

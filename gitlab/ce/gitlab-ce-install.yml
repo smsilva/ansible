@@ -37,13 +37,16 @@
       dest: ~/
       mode: +x
 
-  - name: configure gitlab repository
+  - name: configure gitlab yum repository
     command: sh ~/script.rpm.sh
 
   - name: gitlab-ce install
     yum:
       name: gitlab-ce
       state: present
+  
+  - name: gitlab-ce configure
+    command: gitlab-ctl reconfigure
 
   - name: firewall rule for http port
     firewalld:

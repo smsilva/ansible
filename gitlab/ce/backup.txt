@@ -1,0 +1,32 @@
+yum install rsync
+
+gitlab-rake gitlab:backup:create
+
+/etc/gitlab/gitlab-secrets.json
+/etc/gitlab/gitlab.rb
+
+cd /var/opt/gitlab/backups/
+
+1550595164_2019_02_19_11.7.5_gitlab_backup.tar
+
+https://docs.gitlab.com/ee/raketasks/backup_restore.html
+
+sudo cp 11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar /var/opt/gitlab/backups/
+
+sudo chown git.git /var/opt/gitlab/backups/11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar
+
+gitlab-ctl stop unicorn
+
+gitlab-ctl stop sidekiq
+
+gitlab-ctl status
+
+gitlab-rake gitlab:backup:restore BACKUP=1550595164_2019_02_19_11.7.5
+
+gitlab-rake gitlab:backup:restore BACKUP=1550595164_2019_02_19_11.7.5 force=yes
+
+cp gitlab-secrets.json /etc/gitlab/gitlab-secrets.json
+
+gitlab-ctl restart
+
+gitlab-rake gitlab:check SANITIZE=true

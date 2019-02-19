@@ -45,7 +45,7 @@
       name: gitlab-ce
       state: present
   
-  - name: gitlab-ce configure
+  - name: gitlab-ce reconfigure
     command: gitlab-ctl reconfigure
 
   - name: firewall rule for http port
